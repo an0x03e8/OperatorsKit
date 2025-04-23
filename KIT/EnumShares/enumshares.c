@@ -155,16 +155,18 @@ int go(char *args, int len) {
 		
         hostname = MSVCRT$strtok(hostFileBytes, "\r\n");
         while (hostname != NULL) {
-			nextHostname = MSVCRT$strtok(NULL, "\r\n");
-            if (nextHostname == NULL) {
-                break;
-            }
 			
 			KERNEL32$MultiByteToWideChar(CP_ACP, 0, hostname, -1, wHostname, MAX_PATH);
 			PSHARE_INFO_1 pShareInfo = listShares(wHostname);
-            hostname = nextHostname;
+            
 
 			NETAPI32$NetApiBufferFree(pShareInfo);
+
+            nextHostname = MSVCRT$strtok(NULL, "\r\n");
+            if (nextHostname == NULL) {
+                break;
+            }
+            hostname = nextHostname;
         }
 		printoutput(TRUE);
 		BeaconPrintf(CALLBACK_OUTPUT, "[+] Finished enumerating!\n"); 
